@@ -9,7 +9,7 @@ namespace WebProgramlama.Services
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
-            string[] roleNames = { "Admin", "User" };
+            string[] roleNames = { "Admin", "Student", "Teacher" };
 
             foreach (var role in roleNames)
             {

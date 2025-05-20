@@ -1,0 +1,121 @@
+@{
+    ViewData["Title"] = "Öğrenci Paneli";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Öğrenci Paneli</h2>
+
+    <div class="row">
+        <!-- Ödev Yükleme Bölümü -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Ödev Yükle</h5>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="assignmentTitle" class="form-label">Ödev Başlığı</label>
+                            <input type="text" class="form-control" id="assignmentTitle"
+                                placeholder="Ödev başlığını giriniz">
+                        </div>
+                        <div class="mb-3">
+                            <label for="assignmentFile" class="form-label">Dosya Seçin</label>
+                            <input type="file" class="form-control" id="assignmentFile" accept=".txt">
+                            <div class="form-text">Sadece .txt dosyaları yükleyebilirsiniz.</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Yükle</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ödevlerim Bölümü -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Ödevlerim</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Algoritma Ödevi</h6>
+                                <small class="text-muted">3 gün önce</small>
+                            </div>
+                            <p class="mb-1">Sıralama algoritmaları hakkında ödev.</p>
+                            <small class="text-success">Tamamlandı</small>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Veritabanı Projesi</h6>
+                                <small class="text-muted">1 hafta önce</small>
+                            </div>
+                            <p class="mb-1">Veritabanı tasarımı ve uygulaması.</p>
+                            <small class="text-warning">Beklemede</small>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Web Programlama Ödevi</h6>
+                                <small class="text-muted">2 hafta önce</small>
+                            </div>
+                            <p class="mb-1">ASP.NET Core MVC projesi.</p>
+                            <small class="text-danger">Gecikmiş</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border: none;
+        margin-bottom: 20px;
+    }
+
+    .card-header {
+        border-bottom: none;
+    }
+
+    .list-group-item {
+        border-left: none;
+        border-right: none;
+        padding: 1rem;
+    }
+
+    .list-group-item:first-child {
+        border-top: none;
+    }
+
+    .list-group-item:last-child {
+        border-bottom: none;
+    }
+
+    .list-group-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .btn-primary {
+        padding: 0.5rem 2rem;
+    }
+
+    .form-control:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
+    }
+
+    .text-success {
+        font-weight: 500;
+    }
+
+    .text-warning {
+        font-weight: 500;
+    }
+
+    .text-danger {
+        font-weight: 500;
+    }
+</style>
