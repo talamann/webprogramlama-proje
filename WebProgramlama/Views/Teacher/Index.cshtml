@@ -1,0 +1,140 @@
+@{
+    ViewData["Title"] = "Öğretmen Paneli";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Öğretmen Paneli</h2>
+    <div class="row">
+        <!-- Yeni Ödev Ekle Bölümü -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Yeni Ödev Ekle</h5>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="assignmentTitle" class="form-label">Ödev Başlığı</label>
+                            <input type="text" class="form-control" id="assignmentTitle"
+                                placeholder="Ödev başlığını giriniz">
+                        </div>
+                        <div class="mb-3">
+                            <label for="assignmentDesc" class="form-label">Açıklama</label>
+                            <textarea class="form-control" id="assignmentDesc" rows="3"
+                                placeholder="Ödev açıklamasını giriniz"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="assignmentDue" class="form-label">Son Teslim Tarihi</label>
+                            <input type="date" class="form-control" id="assignmentDue">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Ekle</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Öğrenci Ödevleri Bölümü -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Öğrenci Ödevleri</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Ali Yılmaz</h6>
+                                    <small class="text-muted">Algoritma Ödevi</small>
+                                </div>
+                                <small class="text-muted">3 gün önce</small>
+                            </div>
+                            <p class="mb-1">Sıralama algoritmaları hakkında ödev.</p>
+                            <div class="mt-2">
+                                <label class="form-label mb-1">Not Ver</label>
+                                <input type="number" class="form-control d-inline-block w-auto" min="0" max="100"
+                                    placeholder="Not">
+                                <button class="btn btn-outline-primary btn-sm ms-2">Kaydet</button>
+                            </div>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Zeynep Demir</h6>
+                                    <small class="text-muted">Veritabanı Projesi</small>
+                                </div>
+                                <small class="text-muted">1 hafta önce</small>
+                            </div>
+                            <p class="mb-1">Veritabanı tasarımı ve uygulaması.</p>
+                            <div class="mt-2">
+                                <label class="form-label mb-1">Not Ver</label>
+                                <input type="number" class="form-control d-inline-block w-auto" min="0" max="100"
+                                    placeholder="Not">
+                                <button class="btn btn-outline-primary btn-sm ms-2">Kaydet</button>
+                            </div>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Mehmet Kaya</h6>
+                                    <small class="text-muted">Web Programlama Ödevi</small>
+                                </div>
+                                <small class="text-muted">2 hafta önce</small>
+                            </div>
+                            <p class="mb-1">ASP.NET Core MVC projesi.</p>
+                            <div class="mt-2">
+                                <label class="form-label mb-1">Not Ver</label>
+                                <input type="number" class="form-control d-inline-block w-auto" min="0" max="100"
+                                    placeholder="Not">
+                                <button class="btn btn-outline-primary btn-sm ms-2">Kaydet</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border: none;
+        margin-bottom: 20px;
+    }
+
+    .card-header {
+        border-bottom: none;
+    }
+
+    .list-group-item {
+        border-left: none;
+        border-right: none;
+        padding: 1rem;
+    }
+
+    .list-group-item:first-child {
+        border-top: none;
+    }
+
+    .list-group-item:last-child {
+        border-bottom: none;
+    }
+
+    .list-group-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .btn-primary,
+    .btn-outline-primary {
+        padding: 0.5rem 1.5rem;
+    }
+
+    .form-control:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+</style>
