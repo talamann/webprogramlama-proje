@@ -20,7 +20,7 @@ namespace WebProgramlama.Data.Repositories
             return await _context.Teachers.ToListAsync();
         }
 
-        public async Task<Teacher> GetByIdAsync(int id)
+        public async Task<Teacher> GetByIdAsync(string id)
         {
             return await _context.Teachers.FindAsync(id);
         }
@@ -37,7 +37,7 @@ namespace WebProgramlama.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(string id)
         {
             var teacher = await _context.Teachers.FindAsync(id);
             if (teacher != null)
