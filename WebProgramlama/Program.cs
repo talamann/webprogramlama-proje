@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebProgramlama.Data;
 using WebProgramlama.Services;
@@ -16,10 +16,29 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
+<<<<<<< Updated upstream
     options.SignIn.RequireConfirmedAccount = true;
+=======
+    options.SignIn.RequireConfirmedAccount = false;
+    // Optional: Configure password requirements
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
+>>>>>>> Stashed changes
 })
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
+
+// Configure authentication cookies
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Login";
+    options.AccessDeniedPath = "/Account/AccessDenied";
+    options.ExpireTimeSpan = TimeSpan.FromHours(24);
+    options.SlidingExpiration = true; // Extends expiration on activity
+});
 
 builder.Services.AddControllersWithViews();
 
@@ -36,6 +55,7 @@ else
     app.UseHsts();
 }
 
+// Seed roles
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -44,11 +64,10 @@ using (var scope = app.Services.CreateScope())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseAuthentication(); // ✅ Correct order
+app.UseAuthorization();  // ✅ Correct order
 
 app.MapControllerRoute(
     name: "default",

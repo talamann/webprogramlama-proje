@@ -1,0 +1,138 @@
+@model TeacherDashboardViewModel
+
+@{
+    ViewData["Title"] = "Öğretmen Paneli";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Öğretmen Paneli - Hoş geldin @Model.Teacher.Name</h2>
+    <div class="row">
+        <!-- Yeni Ödev Ekle Bölümü -->
+
+        <!-- Verilen Ödevler Bölümü -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Verilen Ödevler (@Model.Assignments.Count() ödev)</h5>
+                    <a asp-controller="Teacher" asp-action="CreateAssignment" class="btn btn-success btn-lg">
+                        <i class="fas fa-plus-circle me-2"></i>
+                        Yeni Ödev Oluştur
+                    </a>
+                </div>
+                <div class="card-body">
+                    @if (Model.Assignments.Any())
+                    {
+                        <div class="list-group">
+                            @foreach (var assignment in Model.Assignments)
+                            {
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">Ödev ID: @assignment.Id.ToString().Substring(0, 8)...</h6>
+                                            <small class="text-muted">Öğrenci ID: @assignment.StudentId</small>
+                                        </div>
+                                        <small class="text-muted">Atandı</small>
+                                    </div>
+                                    <p class="mb-1">@assignment.Description</p>
+                                    <div class="mt-2">
+                                        <form asp-controller="Teacher" asp-action="GradeAssignment" method="post" class="d-inline-flex align-items-center">
+                                            <input type="hidden" name="AssignmentId" value="@assignment.Id" />
+                                            <label class="form-label mb-1 me-2">Not Ver:</label>
+                                            <input type="number" class="form-control d-inline-block me-2"
+                                                   style="width: 80px;" min="0" max="100" name="Grade" placeholder="Not" required>
+                                            <button type="submit" class="btn btn-outline-primary btn-sm">Kaydet</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-tasks fa-3x mb-3"></i>
+                            <p>Henüz hiç ödev vermediniz.</p>
+                            <p>Soldaki formu kullanarak öğrencilerinize ödev atayabilirsiniz.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Öğretmen Bilgileri -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Öğretmen Bilgileri</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Ad Soyad:</strong> @Model.Teacher.Name</p>
+                            <p><strong>Öğretmen ID:</strong> @Model.Teacher.Id</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Verilen Ödev Sayısı:</strong> @Model.Assignments.Count()</p>
+                            <p><strong>Durum:</strong> <span class="badge bg-success">Aktif</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border: none;
+        margin-bottom: 20px;
+    }
+
+    .card-header {
+        border-bottom: none;
+    }
+
+    .list-group-item {
+        border-left: none;
+        border-right: none;
+        padding: 1rem;
+    }
+
+        .list-group-item:first-child {
+            border-top: none;
+        }
+
+        .list-group-item:last-child {
+            border-bottom: none;
+        }
+
+        .list-group-item:hover {
+            background-color: #f8f9fa;
+        }
+
+    .btn-primary,
+    .btn-outline-primary {
+        padding: 0.5rem 1.5rem;
+    }
+
+    .form-control:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    .d-inline-flex {
+        display: inline-flex !important;
+    }
+</style>
