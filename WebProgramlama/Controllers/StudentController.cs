@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using System.Security.Claims;
 using WebProgramlama.Data.Interfaces;
 using WebProgramlama.Models;
@@ -31,6 +32,8 @@ namespace WebProgramlama.Controllers
             a.Student = student;
             a.Assignments = assignments;
             return View(a);
+
+
         }
     }
 }

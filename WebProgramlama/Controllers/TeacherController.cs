@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using System.Security.Claims;
 using WebProgramlama.Data.Interfaces;
 using WebProgramlama.Data.Repositories;
@@ -62,7 +63,7 @@ namespace WebProgramlama.Controllers
 
                 if (!students.Any())
                 {
-                    TempData["Error"] = "Sistemde kayýtlý öðrenci bulunmamaktadýr.";
+                    TempData["Error"] = "Sistemde kayï¿½tlï¿½ ï¿½ï¿½renci bulunmamaktadï¿½r.";
                     return RedirectToAction("CreateAssignment");
                 }
 
@@ -90,12 +91,12 @@ namespace WebProgramlama.Controllers
                     createdAssignments.Add(assignmentId);
                 }
 
-                TempData["Success"] = $"Ödev baþarýyla oluþturuldu ve {students.Count()} öðrenciye atandý.";
+                TempData["Success"] = $"ï¿½dev baï¿½arï¿½yla oluï¿½turuldu ve {students.Count()} ï¿½ï¿½renciye atandï¿½.";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"Ödev oluþturulurken bir hata oluþtu: {ex.Message}";
+                TempData["Error"] = $"ï¿½dev oluï¿½turulurken bir hata oluï¿½tu: {ex.Message}";
                 return RedirectToAction("CreateAssignment");
             }
         }
@@ -129,6 +130,7 @@ namespace WebProgramlama.Controllers
             {
                 Console.WriteLine($"Folder creation error: {ex.Message}");
             }
+
         }
     }
 }

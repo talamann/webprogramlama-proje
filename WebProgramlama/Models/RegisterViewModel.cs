@@ -32,4 +32,7 @@ namespace WebProgramlama.Models
         [Display(Name = "Kullanıcı Tipi")]
         public UserType UserType { get; set; }
     }
+
 }
+
+

@@ -11,5 +11,6 @@ namespace WebProgramlama.Data.Interfaces
         Task AddAsync(Teacher teacher);
         Task UpdateAsync(Teacher teacher);
         Task DeleteAsync(string id);
+
     }
 }

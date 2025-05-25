@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebProgramlama.Data;
+using WebProgramlama.Data.Interfaces;
+using WebProgramlama.Data.Repositories;
 using WebProgramlama.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,13 +14,17 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
+builder.Services.AddScoped<IAssignmentRepository, AssignmentRepository>();
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
-<<<<<<< Updated upstream
+
     options.SignIn.RequireConfirmedAccount = true;
-=======
+
     options.SignIn.RequireConfirmedAccount = false;
     // Optional: Configure password requirements
     options.Password.RequireDigit = true;
@@ -26,7 +32,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireUppercase = false;
     options.Password.RequireLowercase = false;
->>>>>>> Stashed changes
+
 })
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
@@ -41,6 +47,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
