@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using WebProgramlama.Data.Interfaces;
@@ -20,10 +20,11 @@ namespace WebProgramlama.Data.Repositories
             return await _context.Students.ToListAsync();
         }
 
-        public async Task<Student> GetByIdAsync(int id)
+        public async Task<Student> GetByIdAsync(string id)
         {
             return await _context.Students.FindAsync(id);
         }
+
 
         public async Task AddAsync(Student student)
         {
@@ -37,7 +38,7 @@ namespace WebProgramlama.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(string id)
         {
             var student = await _context.Students.FindAsync(id);
             if (student != null)

@@ -13,3 +13,4 @@ namespace WebProgramlama.Models
         public string Password { get; set; }
     }
 }
+
