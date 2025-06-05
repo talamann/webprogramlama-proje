@@ -1,0 +1,115 @@
+﻿@model WebProgramlama.Models.RegisterViewModel
+@{
+    ViewData["Title"] = "Kayıt Ol";
+}
+
+<div class="auth-container">
+    <div class="auth-box">
+        <h2>Kayıt Ol</h2>
+        <form method="post" asp-action="Register" asp-controller="Account">
+            <div class="form-group">
+                <label for="FirstName">Ad</label>
+                <input type="text" id="FirstName" name="FirstName" required placeholder="Adınız" />
+            </div>
+            <div class="form-group">
+                <label for="LastName">Soyad</label>
+                <input type="text" id="LastName" name="LastName" required placeholder="Soyadınız" />
+            </div>
+            <div class="form-group">
+                <label for="Email">E-posta</label>
+                <input type="email" id="Email" name="Email" required placeholder="E-posta adresiniz" />
+            </div>
+            <div class="form-group">
+                <label for="Password">Şifre</label>
+                <input type="password" id="Password" name="Password" required placeholder="Şifreniz" />
+            </div>
+            <div class="form-group">
+                <label for="ConfirmPassword">Şifre Tekrar</label>
+                <input type="password" id="ConfirmPassword" name="ConfirmPassword" required
+                    placeholder="Şifrenizi tekrar girin" />
+            </div>
+            <div class="form-group">
+                <label for="UserType">Kullanıcı Tipi</label>
+                <select id="UserType" name="UserType" class="form-control" required>
+                    <option value="">Seçiniz</option>
+                    <option value="0">Öğrenci</option>
+                    <option value="1">Öğretmen</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-primary">Kayıt Ol</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .auth-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+        background-color: #f5f7fa;
+    }
+
+    .auth-box {
+        background: white;
+        padding: 30px 40px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+    }
+
+    .auth-box h2 {
+        margin-bottom: 25px;
+        color: #333;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #555;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    select:focus {
+        border-color: #007bff;
+        outline: none;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 12px;
+        background-color: #007bff;
+        border: none;
+        color: white;
+        font-weight: 700;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+</style>

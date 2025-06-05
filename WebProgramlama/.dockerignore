@@ -1,0 +1,15 @@
+**/.dockerignore
+**/.env
+**/.git
+**/.gitignore
+**/.vs
+**/.vscode
+**/*.*proj.user
+**/bin
+**/obj
+**/out
+**/TestResults
+Dockerfile*
+docker-compose*
+README.md
+.gitignore

@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrongPassword123!
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+
+  flask-api:
+    build: ./PythonScripts
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./Assignments:/app/Assignments
+    environment:
+      - DOCKER_ENV=true
+
+  web-app:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=WebProgramlamaDB;User=sa;Password=YourStrongPassword123!;TrustServerCertificate=true
+      - FlaskApi__BaseUrl=http://flask-api:5000
+    volumes:
+      - ./Assignments:/app/Assignments
+    depends_on:
+      - sqlserver
+      - flask-api
+
+volumes:
+  sqlserver_data:

@@ -1,0 +1,204 @@
+/interface ethernet
+set [ find default-name=ether5 ] name=LAN
+set [ find default-name=ether1 ] name=WAN1
+set [ find default-name=ether2 ] name=WAN2
+set [ find default-name=ether3 ] name=WAN3
+set [ find default-name=ether4 ] name=WAN4
+/interface lte apn
+set [ find default=yes ] ip-type=ipv4 use-network-apn=no
+/ip hotspot profile
+add dns-name=abhsek.com hotspot-address=10.20.30.1 html-directory=flash/hotspot \
+    name=hsprof1
+/ip pool
+add name=hs-pool-5 ranges=192.168.30.2-192.168.30.254
+/ip dhcp-server
+add address-pool=hs-pool-5 interface=LAN lease-time=23h59m59s name=dhcp1
+/ip hotspot
+add address-pool=hs-pool-5 interface=LAN name=hotspot1 profile=hsprof1
+/port
+set 0 name=serial0
+/routing table
+add fib name=to_WAN1
+add fib name=to_WAN2
+add fib name=to_WAN3
+add fib name=to_WAN4
+/ip firewall connection tracking
+set udp-timeout=10s
+/ip neighbor discovery-settings
+set discover-interface-list=all
+/ip settings
+set max-neighbor-entries=8192
+/ipv6 settings
+set disable-ipv6=yes
+/interface ovpn-server server
+set auth=sha1,md5
+/ip address
+add address=192.168.30.1/24 interface=LAN network=192.168.30.0
+add address=192.168.1.4/24 interface=WAN1 network=192.168.1.0
+add address=192.168.2.4/24 interface=WAN2 network=192.168.2.0
+add address=192.168.3.4/24 interface=WAN3 network=192.168.3.0
+add address=192.168.4.4/24 interface=WAN4 network=192.168.4.0
+/ip dhcp-server lease
+add address=192.168.30.247 mac-address=00:19:17:32:FD:43 server=dhcp1
+/ip dhcp-server network
+add address=10.20.30.0/24 comment="hotspot network" gateway=10.20.30.1
+/ip dns
+set allow-remote-requests=yes servers=8.8.8.8,8.8.4.4
+/ip firewall filter
+add action=passthrough chain=unused-hs-chain comment="place hotspot rules here" \
+    disabled=yes
+add action=passthrough chain=unused-hs-chain comment="place hotspot rules here" \
+    disabled=yes
+/ip firewall mangle
+add action=mark-connection chain=input in-interface=WAN1 new-connection-mark=\
+    WAN1_conn passthrough=yes
+add action=mark-connection chain=input in-interface=WAN2 new-connection-mark=\
+    WAN2_conn passthrough=yes
+add action=mark-connection chain=input in-interface=WAN3 new-connection-mark=\
+    WAN3_conn passthrough=yes
+add action=mark-connection chain=input in-interface=WAN4 new-connection-mark=\
+    WAN4_conn passthrough=yes
+add action=mark-routing chain=output connection-mark=WAN1_conn \
+    new-routing-mark=to_WAN1 passthrough=yes
+add action=mark-routing chain=output connection-mark=WAN2_conn \
+    new-routing-mark=to_WAN2 passthrough=yes
+add action=mark-routing chain=output connection-mark=WAN3_conn \
+    new-routing-mark=to_WAN3 passthrough=yes
+add action=mark-routing chain=output connection-mark=WAN4_conn \
+    new-routing-mark=to_WAN4 passthrough=yes
+add action=accept chain=prerouting dst-address=192.168.1.0/24 in-interface=LAN
+add action=accept chain=prerouting dst-address=192.168.2.0/24 in-interface=LAN
+add action=accept chain=prerouting dst-address=192.168.3.0/24 in-interface=LAN
+add action=accept chain=prerouting dst-address=192.168.4.0/24 in-interface=LAN
+add action=mark-connection chain=prerouting dst-address-type=!local \
+    in-interface=LAN new-connection-mark=WAN1_conn passthrough=yes \
+    per-connection-classifier=both-addresses-and-ports:4/0
+add action=mark-connection chain=prerouting dst-address-type=!local \
+    in-interface=LAN new-connection-mark=WAN2_conn passthrough=yes \
+    per-connection-classifier=both-addresses-and-ports:4/1
+add action=mark-connection chain=prerouting dst-address-type=!local \
+    in-interface=LAN new-connection-mark=WAN3_conn passthrough=yes \
+    per-connection-classifier=both-addresses-and-ports:4/2
+add action=mark-connection chain=prerouting dst-address-type=!local \
+    in-interface=LAN new-connection-mark=WAN4_conn passthrough=yes \
+    per-connection-classifier=both-addresses-and-ports:4/3
+add action=mark-routing chain=prerouting connection-mark=WAN1_conn \
+    in-interface=LAN new-routing-mark=to_WAN1 passthrough=yes
+add action=mark-routing chain=prerouting connection-mark=WAN2_conn \
+    in-interface=LAN new-routing-mark=to_WAN2 passthrough=yes
+add action=mark-routing chain=prerouting connection-mark=WAN3_conn \
+    in-interface=LAN new-routing-mark=to_WAN3 passthrough=yes
+add action=mark-routing chain=prerouting connection-mark=WAN4_conn \
+    in-interface=LAN new-routing-mark=to_WAN4 passthrough=yes
+add action=mark-connection chain=input in-interface=WAN1 new-connection-mark=\
+    WAN1_conn passthrough=yes
+add action=mark-connection chain=input in-interface=WAN2 new-connection-mark=\
+    WAN2_conn passthrough=yes
+add action=mark-connection chain=input in-interface=WAN3 new-connection-mark=\
+    WAN3_conn passthrough=yes
+add action=mark-connection chain=input in-interface=WAN4 new-connection-mark=\
+    WAN4_conn passthrough=yes
+add action=mark-routing chain=output connection-mark=WAN1_conn \
+    new-routing-mark=to_WAN1 passthrough=yes
+add action=mark-routing chain=output connection-mark=WAN2_conn \
+    new-routing-mark=to_WAN2 passthrough=yes
+add action=mark-routing chain=output connection-mark=WAN3_conn \
+    new-routing-mark=to_WAN3 passthrough=yes
+add action=mark-routing chain=output connection-mark=WAN4_conn \
+    new-routing-mark=to_WAN4 passthrough=yes
+add action=accept chain=prerouting dst-address=192.168.1.0/24 in-interface=LAN
+add action=accept chain=prerouting dst-address=192.168.2.0/24 in-interface=LAN
+add action=accept chain=prerouting dst-address=192.168.3.0/24 in-interface=LAN
+add action=accept chain=prerouting dst-address=192.168.4.0/24 in-interface=LAN
+add action=mark-connection chain=prerouting dst-address-type=!local \
+    in-interface=LAN new-connection-mark=WAN1_conn passthrough=yes \
+    per-connection-classifier=both-addresses-and-ports:4/0
+add action=mark-connection chain=prerouting dst-address-type=!local \
+    in-interface=LAN new-connection-mark=WAN2_conn passthrough=yes \
+    per-connection-classifier=both-addresses-and-ports:4/1
+add action=mark-connection chain=prerouting dst-address-type=!local \
+    in-interface=LAN new-connection-mark=WAN3_conn passthrough=yes \
+    per-connection-classifier=both-addresses-and-ports:4/2
+add action=mark-connection chain=prerouting dst-address-type=!local \
+    in-interface=LAN new-connection-mark=WAN4_conn passthrough=yes \
+    per-connection-classifier=both-addresses-and-ports:4/3
+add action=mark-routing chain=prerouting connection-mark=WAN1_conn \
+    in-interface=LAN new-routing-mark=to_WAN1 passthrough=yes
+add action=mark-routing chain=prerouting connection-mark=WAN2_conn \
+    in-interface=LAN new-routing-mark=to_WAN2 passthrough=yes
+add action=mark-routing chain=prerouting connection-mark=WAN3_conn \
+    in-interface=LAN new-routing-mark=to_WAN3 passthrough=yes
+add action=mark-routing chain=prerouting connection-mark=WAN4_conn \
+    in-interface=LAN new-routing-mark=to_WAN4 passthrough=yes
+/ip firewall nat
+add action=passthrough chain=unused-hs-chain comment="place hotspot rules here"
+add action=masquerade chain=srcnat out-interface=WAN1
+add action=masquerade chain=srcnat out-interface=WAN2
+add action=masquerade chain=srcnat out-interface=WAN3
+add action=masquerade chain=srcnat out-interface=WAN4
+add action=masquerade chain=srcnat comment="masquerade hotspot network" \
+    src-address=10.20.30.0/24
+add action=passthrough chain=unused-hs-chain comment="place hotspot rules here"
+add action=masquerade chain=srcnat out-interface=WAN1
+add action=masquerade chain=srcnat out-interface=WAN2
+add action=masquerade chain=srcnat out-interface=WAN3
+add action=masquerade chain=srcnat out-interface=WAN4
+add action=masquerade chain=srcnat comment="masquerade hotspot network" \
+    src-address=10.20.30.0/24
+/ip hotspot user
+add name=admin
+/ip ipsec profile
+set [ find default=yes ] dpd-interval=2m dpd-maximum-failures=5
+/ip kid-control
+add fri=0s-1d mon=0s-1d name=system-dummy sat=0s-1d sun=0s-1d thu=0s-1d tue=\
+    0s-1d tur-fri=0s-1d tur-mon=0s-1d tur-sat=0s-1d tur-sun=0s-1d tur-thu=0s-1d \
+    tur-tue=0s-1d tur-wed=0s-1d wed=0s-1d
+/ip route
+add check-gateway=ping disabled=no dst-address=0.0.0.0/0 gateway=192.168.1.1 \
+    routing-table=to_WAN1 scope=255
+add check-gateway=ping disabled=no dst-address=0.0.0.0/0 gateway=192.168.2.1 \
+    routing-table=to_WAN2 scope=255
+add check-gateway=ping disabled=no dst-address=0.0.0.0/0 gateway=192.168.3.1 \
+    routing-table=to_WAN3 scope=255
+add check-gateway=ping disabled=no dst-address=0.0.0.0/0 gateway=192.168.4.1 \
+    routing-table=to_WAN4 scope=255
+add check-gateway=ping disabled=no dst-address=0.0.0.0/0 gateway=192.168.1.1 \
+    scope=255
+add check-gateway=ping disabled=no dst-address=0.0.0.0/0 gateway=192.168.1.1 \
+    scope=255
+add check-gateway=ping disabled=no distance=2 dst-address=0.0.0.0/0 gateway=\
+    192.168.2.1 scope=255
+add check-gateway=ping disabled=no distance=3 dst-address=0.0.0.0/0 gateway=\
+    192.168.3.1 scope=255
+add check-gateway=ping disabled=no distance=4 dst-address=0.0.0.0/0 gateway=\
+    192.168.4.1 scope=255
+add check-gateway=ping disabled=no dst-address=0.0.0.0/0 gateway=192.168.1.1 \
+    routing-table=to_WAN1 scope=255
+add check-gateway=ping disabled=no dst-address=0.0.0.0/0 gateway=192.168.2.1 \
+    routing-table=to_WAN2 scope=255
+add check-gateway=ping disabled=no dst-address=0.0.0.0/0 gateway=192.168.3.1 \
+    routing-table=to_WAN3 scope=255
+add check-gateway=ping disabled=no dst-address=0.0.0.0/0 gateway=192.168.4.1 \
+    routing-table=to_WAN4 scope=255
+add check-gateway=ping disabled=no dst-address=0.0.0.0/0 gateway=192.168.1.1 \
+    scope=255
+add check-gateway=ping disabled=no dst-address=0.0.0.0/0 gateway=192.168.1.1 \
+    scope=255
+add check-gateway=ping disabled=no distance=2 dst-address=0.0.0.0/0 gateway=\
+    192.168.2.1 scope=255
+add check-gateway=ping disabled=no distance=3 dst-address=0.0.0.0/0 gateway=\
+    192.168.3.1 scope=255
+add check-gateway=ping disabled=no distance=4 dst-address=0.0.0.0/0 gateway=\
+    192.168.4.1 scope=255
+/routing bfd configuration
+add disabled=no interfaces=all min-rx=200ms min-tx=200ms multiplier=5
+/system clock
+set time-zone-name=Europe/Istanbul
+/system identity
+set name="Alesta Medya PCC Loadbalancer"
+/system leds
+set 3 type=interface-transmit
+/system note
+set show-at-login=no
+/system routerboard settings
+set enter-setup-on=delete-key

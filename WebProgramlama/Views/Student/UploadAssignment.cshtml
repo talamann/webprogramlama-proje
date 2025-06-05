@@ -1,0 +1,162 @@
+﻿@model IEnumerable<WebProgramlama.Models.Assignment>
+
+@{
+    ViewData["Title"] = "Ödev Yükleme";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="mb-4">Ödev Yükleme</h2>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Ödevlerim</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model != null && Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Ödev Açıklaması</th>
+                                        <th>Durum</th>
+                                        <th>Kopya Testi</th>
+                                        <th>İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var assignment in Model)
+                                    {
+                                        <tr>
+                                            <td>@assignment.Description.Replace(" (Gönderildi)", "")</td>
+                                            <td>
+                                                @if (assignment.Description.Contains("(Gönderildi)"))
+                                                {
+                                                    <span class="badge bg-success">Gönderildi</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-warning">Bekliyor</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (assignment.Description.Contains("(Gönderildi)"))
+                                                {
+                                                    @if (assignment.kopyaTestResult)
+                                                    {
+                                                        <span class="badge bg-success">Geçti</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-danger">Geçmedi</span>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!assignment.Description.Contains("(Gönderildi)"))
+                                                {
+                                                    <button type="button" class="btn btn-primary btn-sm"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#uploadModal"
+                                                            data-assignment-id="@assignment.Id"
+                                                            data-assignment-description="@assignment.Description">
+                                                        Ödev Yükle
+                                                    </button>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-success">Yüklendi</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            Size atanmış ödev bulunmamaktadır.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadModalLabel">Ödev Yükle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="@Url.Action("UploadAssignment", "Student")" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Ödev:</strong></label>
+                        <p id="assignmentDescription" class="text-muted"></p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="uploadedFile" class="form-label">Dosya Seçin (.txt)</label>
+                        <input type="file" class="form-control" id="uploadedFile" name="uploadedFile" accept=".txt" required>
+                        <div class="form-text">Sadece .txt dosyaları kabul edilmektedir.</div>
+                    </div>
+
+                    <input type="hidden" id="assignmentId" name="assignmentId" value="">
+                    @Html.AntiForgeryToken()
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Yükle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var uploadModal = document.getElementById('uploadModal');
+            uploadModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var assignmentId = button.getAttribute('data-assignment-id');
+                var assignmentDescription = button.getAttribute('data-assignment-description');
+
+                var modalAssignmentId = uploadModal.querySelector('#assignmentId');
+                var modalAssignmentDescription = uploadModal.querySelector('#assignmentDescription');
+
+                modalAssignmentId.value = assignmentId;
+                modalAssignmentDescription.textContent = assignmentDescription;
+            });
+        });
+    </script>
+}
