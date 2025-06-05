@@ -26,6 +26,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
+
+<<<<<<<<< Temporary merge branch 1
     options.SignIn.RequireConfirmedAccount = true;
     options.SignIn.RequireConfirmedAccount = false;
     // Optional: Configure password requirements
