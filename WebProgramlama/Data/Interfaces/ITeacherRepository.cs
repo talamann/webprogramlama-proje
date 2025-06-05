@@ -7,9 +7,10 @@ namespace WebProgramlama.Data.Interfaces
     public interface ITeacherRepository
     {
         Task<IEnumerable<Teacher>> GetAllAsync();
-        Task<Teacher> GetByIdAsync(int id);
+        Task<Teacher> GetByIdAsync(string id);
         Task AddAsync(Teacher teacher);
         Task UpdateAsync(Teacher teacher);
-        Task DeleteAsync(int id);
+        Task DeleteAsync(string id);
+
     }
 }

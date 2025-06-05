@@ -9,10 +9,10 @@ using WebProgramlama.Data;
 
 #nullable disable
 
-namespace WebProgramlama.Data.Migrations
+namespace WebProgramlama.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250518134842_initialcreate")]
+    [Migration("20250605123423_initialcreate")]
     partial class initialcreate
     {
         /// <inheritdoc />
@@ -233,11 +233,16 @@ namespace WebProgramlama.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
+                    b.Property<string>("StudentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TeacherId")
-                        .HasColumnType("int");
+                    b.Property<string>("TeacherId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("kopyaTestResult")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -246,11 +251,8 @@ namespace WebProgramlama.Data.Migrations
 
             modelBuilder.Entity("WebProgramlama.Models.Student", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -263,11 +265,8 @@ namespace WebProgramlama.Data.Migrations
 
             modelBuilder.Entity("WebProgramlama.Models.Teacher", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .IsRequired()

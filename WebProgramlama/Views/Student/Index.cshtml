@@ -1,67 +1,72 @@
+@model StudentDashboardViewModel
+
 @{
     ViewData["Title"] = "Öğrenci Paneli";
 }
 
 <div class="container mt-4">
-    <h2 class="mb-4">Öğrenci Paneli</h2>
+    <h2 class="mb-4">Öğrenci Paneli - Hoş geldin @Model.Student.Name</h2>
 
     <div class="row">
-        <!-- Ödev Yükleme Bölümü -->
-        <div class="col-md-6 mb-4">
+        <!-- Ödevlerim Bölümü -->
+        <div class="col-md-8 mx-auto">
             <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Ödev Yükle</h5>
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Ödevlerim (@Model.Assignments.Count() ödev)</h5>
                 </div>
                 <div class="card-body">
-                    <form>
-                        <div class="mb-3">
-                            <label for="assignmentTitle" class="form-label">Ödev Başlığı</label>
-                            <input type="text" class="form-control" id="assignmentTitle"
-                                placeholder="Ödev başlığını giriniz">
+                    @if (Model.Assignments.Any())
+                    {
+                        <div class="list-group">
+                            @foreach (var assignment in Model.Assignments)
+                            {
+                                <div class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">@assignment.Description</h6>
+                                        <small class="text-muted">ID: @assignment.Id</small>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-info">Atanmış Ödev</small>
+                                        <div>
+                                            <a href="@Url.Action("UploadAssignment", "Student", new { studentid = Model.Student.Id })" class="btn btn-sm btn-outline-primary">Ödev Yükle</a>
+                                            <a href="#" class="btn btn-sm btn-outline-secondary">Detayları Gör</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
-                        <div class="mb-3">
-                            <label for="assignmentFile" class="form-label">Dosya Seçin</label>
-                            <input type="file" class="form-control" id="assignmentFile" accept=".txt">
-                            <div class="form-text">Sadece .txt dosyaları yükleyebilirsiniz.</div>
+                    }
+                    else
+                    {
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-inbox fa-3x mb-3"></i>
+                            <p>Henüz size atanmış ödev bulunmamaktadır.</p>
+                            <p>Öğretmeniniz tarafından ödev atandığında burada görüntülenecektir.</p>
                         </div>
-                        <button type="submit" class="btn btn-primary">Yükle</button>
-                    </form>
+                    }
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Ödevlerim Bölümü -->
-        <div class="col-md-6">
+    <!-- Öğrenci Bilgileri -->
+    <div class="row mt-4">
+        <div class="col-12">
             <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Ödevlerim</h5>
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Öğrenci Bilgileri</h5>
                 </div>
                 <div class="card-body">
-                    <div class="list-group">
-                        <a href="#" class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">Algoritma Ödevi</h6>
-                                <small class="text-muted">3 gün önce</small>
-                            </div>
-                            <p class="mb-1">Sıralama algoritmaları hakkında ödev.</p>
-                            <small class="text-success">Tamamlandı</small>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">Veritabanı Projesi</h6>
-                                <small class="text-muted">1 hafta önce</small>
-                            </div>
-                            <p class="mb-1">Veritabanı tasarımı ve uygulaması.</p>
-                            <small class="text-warning">Beklemede</small>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">Web Programlama Ödevi</h6>
-                                <small class="text-muted">2 hafta önce</small>
-                            </div>
-                            <p class="mb-1">ASP.NET Core MVC projesi.</p>
-                            <small class="text-danger">Gecikmiş</small>
-                        </a>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Ad Soyad:</strong> @Model.Student.Name</p>
+                            <p><strong>Öğrenci ID:</strong> @Model.Student.Id</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Toplam Ödev:</strong> @Model.Assignments.Count()</p>
+                            <p><strong>Durum:</strong> <span class="badge bg-success">Aktif</span></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -86,17 +91,17 @@
         padding: 1rem;
     }
 
-    .list-group-item:first-child {
-        border-top: none;
-    }
+        .list-group-item:first-child {
+            border-top: none;
+        }
 
-    .list-group-item:last-child {
-        border-bottom: none;
-    }
+        .list-group-item:last-child {
+            border-bottom: none;
+        }
 
-    .list-group-item:hover {
-        background-color: #f8f9fa;
-    }
+        .list-group-item:hover {
+            background-color: #f8f9fa;
+        }
 
     .btn-primary {
         padding: 0.5rem 2rem;
@@ -117,5 +122,10 @@
 
     .text-danger {
         font-weight: 500;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
     }
 </style>

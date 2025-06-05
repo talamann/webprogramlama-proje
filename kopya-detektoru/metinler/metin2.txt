@@ -1,0 +1,4 @@
+Başlık: Bilgisayarın Gelişimi
+
+Bilgisayarlar, ilk kez 20. yüzyılın ortalarında insanlar tarafından çeşitli hesaplamalar yapmak amacıyla kullanıldı. Erken dönem bilgisayarları oldukça büyük ve karmaşıktı, fakat teknolojinin ilerlemesiyle birlikte bu makineler giderek küçüldü. Günümüzde, bilgisayarlar sadece veri işlemekle kalmaz, aynı zamanda eğlence, iletişim ve iş dünyasında da önemli bir yere sahiptir.
+

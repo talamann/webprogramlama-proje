@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,14 +27,14 @@ namespace WebProgramlama.Data.Repositories
             return await _context.Assignments.FindAsync(id);
         }
 
-        public async Task<IEnumerable<Assignment>> GetByStudentIdAsync(int studentId)
+        public async Task<IEnumerable<Assignment>> GetByStudentIdAsync(string studentId)
         {
             return await _context.Assignments
                 .Where(a => a.StudentId == studentId)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Assignment>> GetByTeacherIdAsync(int teacherId)
+        public async Task<IEnumerable<Assignment>> GetByTeacherIdAsync(string teacherId)
         {
             return await _context.Assignments
                 .Where(a => a.TeacherId == teacherId)

@@ -1,95 +1,146 @@
+@model TeacherDashboardViewModel
+
 @{
     ViewData["Title"] = "Öğretmen Paneli";
 }
 
 <div class="container mt-4">
-    <h2 class="mb-4">Öğretmen Paneli</h2>
+    <h2 class="mb-4">Öğretmen Paneli - Hoş geldin @Model.Teacher.Name</h2>
+
+    <!-- Flask API Status -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="alert alert-info d-flex align-items-center" id="flaskStatus">
+                <div class="spinner-border spinner-border-sm me-2" role="status" id="statusSpinner">
+                    <span class="visually-hidden">Yükleniyor...</span>
+                </div>
+                <span id="statusText">Flask API durumu kontrol ediliyor...</span>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
-        <!-- Yeni Ödev Ekle Bölümü -->
-        <div class="col-md-6 mb-4">
+        <!-- Verilen Ödevler Bölümü -->
+        <div class="col-md-6">
             <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Yeni Ödev Ekle</h5>
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Verilen Ödevler (@Model.Assignments.Count() ödev)</h5>
+                    <div>
+                        <button type="button" class="btn btn-light btn-sm me-2" id="checkAllBtn">
+                            <i class="fas fa-search me-1"></i>
+                            Tümünü Kontrol Et
+                        </button>
+                        <a asp-controller="Teacher" asp-action="CreateAssignment" class="btn btn-warning">
+                            <i class="fas fa-plus-circle me-2"></i>
+                            Yeni Ödev Oluştur
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <form>
-                        <div class="mb-3">
-                            <label for="assignmentTitle" class="form-label">Ödev Başlığı</label>
-                            <input type="text" class="form-control" id="assignmentTitle"
-                                placeholder="Ödev başlığını giriniz">
+                    @if (Model.Assignments.Any())
+                    {
+                        <div class="list-group">
+                            @foreach (var assignment in Model.Assignments)
+                            {
+                                <div class="list-group-item assignment-item" data-assignment-id="@assignment.Id">
+                                    <div class="d-flex w-100 justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">Ödev ID: @assignment.Id.ToString().Substring(0, 8)...</h6>
+                                            <small class="text-muted">Öğrenci ID: @assignment.StudentId</small>
+                                        </div>
+                                        <div class="assignment-status">
+                                            <span class="badge bg-secondary">Beklemede</span>
+                                        </div>
+                                    </div>
+                                    <p class="mb-2">@assignment.Description</p>
+
+                                    <!-- Control Buttons -->
+                                    <div class="control-buttons mb-2">
+                                        <button type="button" class="btn btn-outline-warning btn-sm check-plagiarism-btn"
+                                                data-assignment-id="@assignment.Id">
+                                            <i class="fas fa-copy me-1"></i>
+                                            Kopya Kontrol
+                                        </button>
+                                        <button type="button" class="btn btn-outline-info btn-sm check-ai-btn"
+                                                data-assignment-id="@assignment.Id">
+                                            <i class="fas fa-robot me-1"></i>
+                                            AI Kontrol
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm view-details-btn"
+                                                data-assignment-id="@assignment.Id">
+                                            <i class="fas fa-eye me-1"></i>
+                                            Detaylar
+                                        </button>
+                                    </div>
+
+                                    <!-- Results Container -->
+                                    <div class="results-container" id="results-@assignment.Id" style="display: none;">
+                                        <div class="alert alert-light p-2 mb-2">
+                                            <div class="results-content"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Grade Assignment -->
+                                    <div class="mt-2">
+                                        <form asp-controller="Teacher" asp-action="GradeAssignment" method="post" class="d-inline-flex align-items-center">
+                                            <input type="hidden" name="AssignmentId" value="@assignment.Id" />
+                                            <label class="form-label mb-1 me-2">Not Ver:</label>
+                                            <input type="number" class="form-control d-inline-block me-2"
+                                                   style="width: 80px;" min="0" max="100" name="Grade" placeholder="Not" required>
+                                            <button type="submit" class="btn btn-outline-primary btn-sm">Kaydet</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            }
                         </div>
-                        <div class="mb-3">
-                            <label for="assignmentDesc" class="form-label">Açıklama</label>
-                            <textarea class="form-control" id="assignmentDesc" rows="3"
-                                placeholder="Ödev açıklamasını giriniz"></textarea>
+                    }
+                    else
+                    {
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-tasks fa-3x mb-3"></i>
+                            <p>Henüz hiç ödev vermediniz.</p>
+                            <p>Soldaki formu kullanarak öğrencilerinize ödev atayabilirsiniz.</p>
                         </div>
-                        <div class="mb-3">
-                            <label for="assignmentDue" class="form-label">Son Teslim Tarihi</label>
-                            <input type="date" class="form-control" id="assignmentDue">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Ekle</button>
-                    </form>
+                    }
                 </div>
             </div>
         </div>
-        <!-- Öğrenci Ödevleri Bölümü -->
-        <div class="col-md-6">
+    </div>
+
+    <!-- Öğretmen Bilgileri -->
+    <div class="row mt-4">
+        <div class="col-12">
             <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Öğrenci Ödevleri</h5>
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Öğretmen Bilgileri</h5>
                 </div>
                 <div class="card-body">
-                    <div class="list-group">
-                        <div class="list-group-item">
-                            <div class="d-flex w-100 justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-1">Ali Yılmaz</h6>
-                                    <small class="text-muted">Algoritma Ödevi</small>
-                                </div>
-                                <small class="text-muted">3 gün önce</small>
-                            </div>
-                            <p class="mb-1">Sıralama algoritmaları hakkında ödev.</p>
-                            <div class="mt-2">
-                                <label class="form-label mb-1">Not Ver</label>
-                                <input type="number" class="form-control d-inline-block w-auto" min="0" max="100"
-                                    placeholder="Not">
-                                <button class="btn btn-outline-primary btn-sm ms-2">Kaydet</button>
-                            </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Ad Soyad:</strong> @Model.Teacher.Name</p>
+                            <p><strong>Öğretmen ID:</strong> @Model.Teacher.Id</p>
                         </div>
-                        <div class="list-group-item">
-                            <div class="d-flex w-100 justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-1">Zeynep Demir</h6>
-                                    <small class="text-muted">Veritabanı Projesi</small>
-                                </div>
-                                <small class="text-muted">1 hafta önce</small>
-                            </div>
-                            <p class="mb-1">Veritabanı tasarımı ve uygulaması.</p>
-                            <div class="mt-2">
-                                <label class="form-label mb-1">Not Ver</label>
-                                <input type="number" class="form-control d-inline-block w-auto" min="0" max="100"
-                                    placeholder="Not">
-                                <button class="btn btn-outline-primary btn-sm ms-2">Kaydet</button>
-                            </div>
-                        </div>
-                        <div class="list-group-item">
-                            <div class="d-flex w-100 justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-1">Mehmet Kaya</h6>
-                                    <small class="text-muted">Web Programlama Ödevi</small>
-                                </div>
-                                <small class="text-muted">2 hafta önce</small>
-                            </div>
-                            <p class="mb-1">ASP.NET Core MVC projesi.</p>
-                            <div class="mt-2">
-                                <label class="form-label mb-1">Not Ver</label>
-                                <input type="number" class="form-control d-inline-block w-auto" min="0" max="100"
-                                    placeholder="Not">
-                                <button class="btn btn-outline-primary btn-sm ms-2">Kaydet</button>
-                            </div>
+                        <div class="col-md-6">
+                            <p><strong>Verilen Ödev Sayısı:</strong> @Model.Assignments.Count()</p>
+                            <p><strong>Durum:</strong> <span class="badge bg-success">Aktif</span></p>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for detailed results -->
+<div class="modal fade" id="detailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ödev Detayları</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content will be loaded here -->
             </div>
         </div>
     </div>
@@ -112,17 +163,17 @@
         padding: 1rem;
     }
 
-    .list-group-item:first-child {
-        border-top: none;
-    }
+        .list-group-item:first-child {
+            border-top: none;
+        }
 
-    .list-group-item:last-child {
-        border-bottom: none;
-    }
+        .list-group-item:last-child {
+            border-bottom: none;
+        }
 
-    .list-group-item:hover {
-        background-color: #f8f9fa;
-    }
+        .list-group-item:hover {
+            background-color: #f8f9fa;
+        }
 
     .btn-primary,
     .btn-outline-primary {
@@ -137,4 +188,237 @@
     .form-label {
         font-weight: 500;
     }
+
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        margin-right: 0.25rem;
+    }
+
+    .d-inline-flex {
+        display: inline-flex !important;
+    }
+
+    .control-buttons {
+        margin-bottom: 0.5rem;
+    }
+
+    .assignment-status {
+        min-width: 100px;
+        text-align: center;
+    }
+
+    .results-container {
+        border-left: 3px solid #007bff;
+        margin-left: 1rem;
+    }
+
+    .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+    }
+
+    .loading {
+        opacity: 0.6;
+        pointer-events: none;
+    }
 </style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Check Flask API status on page load
+        checkFlaskStatus();
+
+        // Check plagiarism button click
+        $('.check-plagiarism-btn').click(function () {
+            const assignmentId = $(this).data('assignment-id');
+            const btn = $(this);
+            const resultContainer = $(`#results-${assignmentId}`);
+
+            btn.addClass('loading').prop('disabled', true);
+            btn.html('<i class="fas fa-spinner fa-spin me-1"></i>Kontrol Ediliyor...');
+
+            $.post('/Teacher/CheckPlagiarism', { assignmentId: assignmentId })
+                .done(function (data) {
+                    if (data.success) {
+                        let html = '<strong>Kopya Kontrol Sonucu:</strong><br>';
+                        if (data.hasPlagiarism) {
+                            html += '<span class="text-danger"><i class="fas fa-exclamation-triangle"></i> Kopya tespit edildi!</span><br>';
+                            html += '<small>Benzerlikler:</small><ul>';
+                            data.comparisons.forEach(comp => {
+                                html += `<li>${comp.file1} ↔ ${comp.file2}: %${comp.similarity}</li>`;
+                            });
+                            html += '</ul>';
+                            updateAssignmentStatus(assignmentId, 'danger', 'Kopya Var');
+                        } else {
+                            html += '<span class="text-success"><i class="fas fa-check"></i> Kopya tespit edilmedi.</span>';
+                            updateAssignmentStatus(assignmentId, 'success', 'Temiz');
+                        }
+                        resultContainer.find('.results-content').html(html);
+                        resultContainer.show();
+                    } else {
+                        showError('Kopya kontrolü başarısız: ' + data.message);
+                    }
+                })
+                .fail(function () {
+                    showError('Kopya kontrolü sırasında hata oluştu.');
+                })
+                .always(function () {
+                    btn.removeClass('loading').prop('disabled', false);
+                    btn.html('<i class="fas fa-copy me-1"></i>Kopya Kontrol');
+                });
+        });
+
+        // Check AI content button click
+        $('.check-ai-btn').click(function () {
+            const assignmentId = $(this).data('assignment-id');
+            const btn = $(this);
+            const resultContainer = $(`#results-${assignmentId}`);
+
+            btn.addClass('loading').prop('disabled', true);
+            btn.html('<i class="fas fa-spinner fa-spin me-1"></i>Kontrol Ediliyor...');
+
+            $.post('/Teacher/CheckAiContent', { assignmentId: assignmentId })
+                .done(function (data) {
+                    if (data.success) {
+                        let html = '<strong>AI Kontrol Sonucu:</strong><br>';
+                        if (data.hasAiContent) {
+                            html += '<span class="text-warning"><i class="fas fa-robot"></i> AI içerik tespit edildi!</span><br>';
+                            html += '<small>Dosya sonuçları:</small><ul>';
+                            data.results.forEach(result => {
+                                if (result.error) {
+                                    html += `<li>${result.fileName}: Hata - ${result.error}</li>`;
+                                } else {
+                                    html += `<li>${result.fileName}: AI %${(result.aiProbability * 100).toFixed(1)}, İnsan %${(result.humanProbability * 100).toFixed(1)}</li>`;
+                                }
+                            });
+                            html += '</ul>';
+                            updateAssignmentStatus(assignmentId, 'warning', 'AI Var');
+                        } else {
+                            html += '<span class="text-success"><i class="fas fa-check"></i> AI içerik tespit edilmedi.</span>';
+                            updateAssignmentStatus(assignmentId, 'success', 'Temiz');
+                        }
+                        resultContainer.find('.results-content').html(html);
+                        resultContainer.show();
+                    } else {
+                        showError('AI kontrolü başarısız: ' + data.message);
+                    }
+                })
+                .fail(function () {
+                    showError('AI kontrolü sırasında hata oluştu.');
+                })
+                .always(function () {
+                    btn.removeClass('loading').prop('disabled', false);
+                    btn.html('<i class="fas fa-robot me-1"></i>AI Kontrol');
+                });
+        });
+
+        // View details button click
+        $('.view-details-btn').click(function () {
+            const assignmentId = $(this).data('assignment-id');
+
+            $.get('/Teacher/GetAssignmentDetails', { assignmentId: assignmentId })
+                .done(function (data) {
+                    if (data.success) {
+                        let html = `
+                            <h6>Ödev Bilgileri</h6>
+                            <p><strong>ID:</strong> ${data.assignment.id}</p>
+                            <p><strong>Açıklama:</strong> ${data.assignment.description}</p>
+                            <p><strong>Öğrenci ID:</strong> ${data.assignment.studentId}</p>
+                            <hr>
+                            <h6>Yüklenen Dosyalar (${data.files.length} dosya)</h6>
+                        `;
+
+                        if (data.files.length > 0) {
+                            html += '<ul class="list-group">';
+                            data.files.forEach(file => {
+                                html += `
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>${file.name}</strong><br>
+                                            <small class="text-muted">Boyut: ${(file.size / 1024).toFixed(1)} KB | Oluşturulma: ${new Date(file.created).toLocaleString()}</small>
+                                        </div>
+                                    </li>
+                                `;
+                            });
+                            html += '</ul>';
+                        } else {
+                            html += '<p class="text-muted">Henüz dosya yüklenmemiş.</p>';
+                        }
+
+                        $('#modalBody').html(html);
+                        $('#detailsModal').modal('show');
+                    } else {
+                        showError('Detaylar yüklenemedi: ' + data.message);
+                    }
+                })
+                .fail(function () {
+                    showError('Detaylar yüklenirken hata oluştu.');
+                });
+        });
+
+        // Check all assignments button
+        $('#checkAllBtn').click(function () {
+            const btn = $(this);
+            btn.addClass('loading').prop('disabled', true);
+            btn.html('<i class="fas fa-spinner fa-spin me-1"></i>Kontrol Ediliyor...');
+
+            $.post('/Teacher/CheckAllAssignments')
+                .done(function (data) {
+                    if (data.success) {
+                        data.results.forEach(result => {
+                            let status = 'success';
+                            let text = 'Temiz';
+
+                            if (result.plagiarism.hasPlagiarism) {
+                                status = 'danger';
+                                text = 'Kopya Var';
+                            } else if (result.aiContent.hasAiContent) {
+                                status = 'warning';
+                                text = 'AI Var';
+                            }
+
+                            updateAssignmentStatus(result.assignmentId, status, text);
+                        });
+                        showSuccess(`${data.results.length} ödev kontrol edildi.`);
+                    } else {
+                        showError('Toplu kontrol başarısız: ' + data.message);
+                    }
+                })
+                .fail(function () {
+                    showError('Toplu kontrol sırasında hata oluştu.');
+                })
+                .always(function () {
+                    btn.removeClass('loading').prop('disabled', false);
+                    btn.html('<i class="fas fa-search me-1"></i>Tümünü Kontrol Et');
+                });
+        });
+
+        function checkFlaskStatus() {
+            // This would be a call to check Flask API health
+            // For now, we'll simulate it
+            setTimeout(function () {
+                $('#statusSpinner').hide();
+                $('#statusText').text('Flask API çalışıyor ✓');
+                $('#flaskStatus').removeClass('alert-info').addClass('alert-success');
+            }, 1000);
+        }
+
+        function updateAssignmentStatus(assignmentId, type, text) {
+            const statusElement = $(`.assignment-item[data-assignment-id="${assignmentId}"] .assignment-status`);
+            statusElement.html(`<span class="badge bg-${type}">${text}</span>`);
+        }
+
+        function showError(message) {
+            // You can implement a toast notification or alert here
+            alert('Hata: ' + message);
+        }
+
+        function showSuccess(message) {
+            // You can implement a toast notification or alert here
+            alert('Başarılı: ' + message);
+        }
+    });
+</script>

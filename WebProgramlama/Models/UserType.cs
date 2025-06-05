@@ -5,4 +5,6 @@ namespace WebProgramlama.Models
         Student,
         Teacher
     }
+
 }
+
